@@ -1,4 +1,3 @@
-// src/utils/fetch-package.ts
 import { execa } from "execa";
 import path from "path";
 import fs from "fs/promises";
@@ -9,12 +8,13 @@ export async function fetchPackage(name: string, version: string) {
   console.log("Created temp dir:", tempDir);
 
   try {
-    // Create a temporary package.json
     const pkgJsonPath = path.join(tempDir, "package.json");
-    await fs.writeFile(
-      pkgJsonPath,
-      JSON.stringify({ dependencies: { [name]: version } })
-    );
+    const pkgJson = {
+      dependencies: {
+        [name]: version, // name should already be fully qualified (e.g. "@uiid/layout")
+      },
+    };
+    await fs.writeFile(pkgJsonPath, JSON.stringify(pkgJson));
     console.log(
       "Created package.json:",
       await fs.readFile(pkgJsonPath, "utf8")
