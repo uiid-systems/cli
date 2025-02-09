@@ -1,14 +1,13 @@
-// src/commands/add.ts
 import { execa } from "execa";
 import fs from "fs/promises";
 import ora from "ora";
 import path from "path";
-import { fetchPackage } from "../utils/fetch-package";
+import { fetchPackage } from "../utils/fetch-package.js";
 import {
   copyBaseFiles,
   copyStoriesFiles,
   copyTestFiles,
-} from "../utils/copy-files";
+} from "../utils/copy-files.js";
 
 interface AddOptions {
   stories?: boolean;

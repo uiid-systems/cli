@@ -6,12 +6,16 @@
   "author": "Adam Fratino",
   "license": "MIT",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "uiid": "./dist/index.js"
   },
   "scripts": {
     "build": "tsup",
-    "dev": "tsup --watch"
+    "dev": "tsup --watch",
+    "release": "pnpm build && pnpm publish"
   },
   "dependencies": {
     "commander": "^13.1.0",
