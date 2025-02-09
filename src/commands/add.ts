@@ -1,3 +1,4 @@
+// src/commands/add.ts
 import { execa } from "execa";
 import fs from "fs/promises";
 import ora from "ora";
@@ -49,21 +50,21 @@ export async function add(packages: string[], options: AddOptions) {
 
     for (const pkg of pkgSpecs) {
       // 1. Fetch package contents
-      await fetchPackage(pkg.name, pkg.version);
+      const packagePath = await fetchPackage(pkg.name, pkg.version);
 
       // 2. Create directory structure
-      const targetDir = path.join(process.cwd(), options.path || "", pkg.name);
+      const targetDir = path.resolve(process.cwd(), options.path || "");
       await fs.mkdir(targetDir, { recursive: true });
 
       // 3. Copy base files (components, properties, styles)
-      await copyBaseFiles(pkg.name, targetDir);
+      await copyBaseFiles(packagePath, targetDir);
 
       // 4. Copy optional directories based on flags
       if (options.stories) {
-        await copyStoriesFiles(pkg.name, targetDir);
+        await copyStoriesFiles(packagePath, targetDir);
       }
       if (options.tests) {
-        await copyTestFiles(pkg.name, targetDir);
+        await copyTestFiles(packagePath, targetDir);
       }
 
       // 5. Update package.json with dependencies
@@ -83,8 +84,6 @@ export async function add(packages: string[], options: AddOptions) {
     process.exit(1);
   }
 }
-
-// Implementation moved to utils
 
 async function updatePackageJson(
   pkgName: string,
