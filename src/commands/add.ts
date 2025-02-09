@@ -1,4 +1,3 @@
-// src/commands/add.ts
 import { execa } from "execa";
 import fs from "fs/promises";
 import ora from "ora";
@@ -44,8 +43,12 @@ export async function add(packages: string[], options: AddOptions) {
   try {
     // Parse package names and versions
     const pkgSpecs = packages.map((pkg) => {
-      const [name, version = "latest"] = pkg.split("@");
-      return { name, version };
+      // If no scope is provided, assume @uiid scope
+      if (!pkg.startsWith("@")) {
+        pkg = `@uiid/${pkg}`;
+      }
+      const [name, version = "latest"] = pkg.split("@").filter(Boolean);
+      return { name: `@uiid/${name}`, version };
     });
 
     for (const pkg of pkgSpecs) {
