@@ -48,7 +48,7 @@ export async function add(packages: string[], options: AddOptions) {
         pkg = `@uiid/${pkg}`;
       }
       const [name, version = "latest"] = pkg.split("@").filter(Boolean);
-      return { name: `@uiid/${name}`, version };
+      return { name, version };
     });
 
     for (const pkg of pkgSpecs) {
