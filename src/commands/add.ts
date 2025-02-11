@@ -102,7 +102,27 @@ async function updatePackageJson(
   pkgName: string,
   options: { stories?: boolean; tests?: boolean }
 ) {
-  const pkgJsonPath = path.join(process.cwd(), "package.json");
+  // Find the nearest package.json by walking up directories
+  let currentDir = process.cwd();
+  let pkgJsonPath: string | null = null;
+
+  while (currentDir !== path.parse(currentDir).root) {
+    const testPath = path.join(currentDir, "package.json");
+    try {
+      await fs.access(testPath);
+      pkgJsonPath = testPath;
+      break;
+    } catch {
+      currentDir = path.dirname(currentDir);
+    }
+  }
+
+  if (!pkgJsonPath) {
+    throw new Error(
+      "Could not find package.json in current directory or any parent directory"
+    );
+  }
+
   const pkgJson = JSON.parse(await fs.readFile(pkgJsonPath, "utf-8"));
 
   // Add base dependencies
