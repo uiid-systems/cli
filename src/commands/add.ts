@@ -66,7 +66,16 @@ export async function add(packages: string[], options: AddOptions) {
       const packagePath = await fetchPackage(pkg.name, pkg.version);
 
       // 2. Create directory structure
-      const targetDir = path.resolve(process.cwd(), options.path || "");
+      // If a path is provided, use it as the base directory, otherwise use current directory
+      const baseDir = options.path
+        ? path.resolve(process.cwd(), options.path)
+        : process.cwd();
+
+      // Create a subdirectory for each package
+      const packageName = pkg.name.split("/")[1]; // Gets 'layout' from '@uiid/layout'
+      const targetDir = path.join(baseDir, packageName);
+
+      // Ensure the directory exists
       await fs.mkdir(targetDir, { recursive: true });
 
       // 3. Copy base files (components, properties, styles)
